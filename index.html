@@ -1,40 +1,665 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
 
-		<title>reveal.js</title>
+    <title>Talks | Bundlers - the invisible hero of the frontend</title>
 
-		<link rel="stylesheet" href="dist/reset.css">
-		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css">
+    <link rel="stylesheet" href="dist/reset.css" />
+    <link rel="stylesheet" href="dist/reveal.css" />
+    <link rel="stylesheet" href="dist/theme/sky.css" />
 
-		<!-- Theme used for syntax highlighted code -->
-		<link rel="stylesheet" href="plugin/highlight/monokai.css">
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
-		</div>
+    <!-- Theme used for syntax highlighted code -->
+    <link
+      rel="stylesheet"
+      href="https://highlightjs.org/static/demo/styles/tomorrow-night-blue.css"
+    />
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h1>Bundlers</h1>
+          <p>the invisible hero (& villain) of the JS world?</p>
+        </section>
 
-		<script src="dist/reveal.js"></script>
-		<script src="plugin/notes/notes.js"></script>
-		<script src="plugin/markdown/markdown.js"></script>
-		<script src="plugin/highlight/highlight.js"></script>
-		<script>
-			// More info about initialization & config:
-			// - https://revealjs.com/initialization/
-			// - https://revealjs.com/config/
-			Reveal.initialize({
-				hash: true,
+        <section>
+          <h2>Examples</h2>
 
-				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+          <ul>
+            <li>Webpack</li>
+            <li>Parcel</li>
+            <li>ESBuild</li>
+            <li>Rollup</li>
+          </ul>
+        </section>
+
+        <section>Why do they exist?</section>
+
+        <section>
+          <h3>1991</h3>
+          <img src="images/first-website.png" />
+        </section>
+
+        <section>Netscape</section>
+
+        <section>
+          <h3>1995</h3>
+          <img
+            src="http://prod-upp-image-read.ft.com/2370cb1e-4dc2-11e4-9683-00144feab7de"
+          />
+        </section>
+
+        <section>
+          <p>JavaScript was designed in <strong>10 days</strong></p>
+          <p class="fragment">Developed as an <strong>MVP</strong></p>
+          <p class="fragment">
+            Today <strong>#1</strong> most commonly used language
+          </p>
+        </section>
+
+        <section>
+          <p>It had a few quirks</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+// function takes in an argument
+function plusOne(x) { return x + 1; }
+
+// JavaScript doesn't care
+plusOne(); // undefined
+
+// because this makes sense
+[] == ![] // true
+
+// it kinda makes sense... actually no
+Number([]) // 0
+					</code></pre>
+        </section>
+
+        <section>
+          <p>In a browser</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+<script src="/script1.js"></script>
+<script src="/script2.js"></script>
+		</code></pre>
+        </section>
+
+        <section>
+          <p>Translates to...</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+			// script1.js
+			utils = { somethingUseful: function () { } };
+			helper1 = { something1: function () { return utils.somethingUseful(); } };
+
+			// script2.js
+			utils = { somethingElse: function () { } }; // oops, redefined
+			helper2 = { something2: function () { return utils.somethingElse(); };
+			</code></pre>
+        </section>
+
+        <section>
+          <p>IIFE</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+			window.helper1 = (function (w) { return /* helper1 stuff */; })(window);
+			</code></pre>
+        </section>
+
+        <section>
+          <p>Node.js</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+			var helper1 = require('helper1');
+			</code></pre>
+        </section>
+
+        <section>
+          <p>But browsers needed...</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+			<script src="/script1.js"></script>
+			</code></pre>
+        </section>
+
+        <section>Browserify was born!</section>
+
+        <section>
+          <p>Callback hell...</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+http.get(arg1, function (err1, res1) {
+	http.get(arg2, function (err2, res2) {
+		http.get(arg3, function (err3, res3) {
+			db.read(arg4, function (err4, res4) {
+				// something useful
 			});
-		</script>
-	</body>
+		});
+	});
+});
+			</code></pre>
+        </section>
+
+        <section>
+          <p>ECMAScript was born</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+			const res1 = await http.get(arg1);
+			const res2 = await http.get(arg2);
+			const res3 = await http.get(arg3);
+			const res4 = await db.read(arg4);
+			</code></pre>
+        </section>
+
+        <section>But browsers were slow...</section>
+
+        <section>
+          <p>So the community created...</p>
+          <p class="fragment">Babel!</p>
+        </section>
+
+        <section>
+          <p>😀</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+			const res1 = await http.get(arg1);
+			const res2 = await http.get(arg2);
+			const res3 = await http.get(arg3);
+			const res4 = await db.read(arg4);
+			</code></pre>
+        </section>
+
+        <section>
+          <p>Remember this problem?</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+// function takes in an argument
+function plusOne(x) { return x + 1; }
+
+// JavaScript doesn't care
+plusOne(); // undefined
+			</code></pre>
+        </section>
+
+        <section>
+          <p>Typescript was born!</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+			// function takes in a number
+			function plusOne(x: number) { return x + 1; }
+
+			// TypeScript cares
+			plusOne(); // COMPILE ERROR
+			</code></pre>
+        </section>
+
+        <section>The first bundlers gave us power</section>
+
+        <section>What else can we do?</section>
+
+        <section>In browser-land...</section>
+
+        <section>
+          <p>What if?</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+			import Image from 'assets/images.png';
+			import 'styles/assets.css';
+			</code></pre>
+        </section>
+
+        <section>
+          <p>What if?</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+import ImageAsReactComponent from 'assets/images.png';
+import myCss from 'styles/assets.css';
+			</code></pre>
+        </section>
+
+        <section>
+          <p>But users needed...</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+function dieToss(){return Math.floor(6*Math.random())+1}function tossASix(){return new RSVP.Promise(function(a,b){var c=Math.floor(6*Math.random())+1;6===c?a(c):b(c)})}function logAndTossAgain(a){return console.log("Tossed a "+a+", need to try again."),tossASix()}function logSuccess(a){console.log("Yay, managed to toss a "+a+".")}function logFailure(a){console.log("Tossed a "+a+". Too bad, couldn't roll a six")}tossASix().then(null,logAndTossAgain).then(null,logAndTossAgain).then(logSuccess,logFailure);
+			</code></pre>
+        </section>
+
+        <section>
+          <p>So the community started building tools</p>
+        </section>
+
+        <section>
+          <p>Like...</p>
+          <img src="images/loaders.png" />
+        </section>
+
+        <section>
+          <p>We ended up with a whole bunch of tools</p>
+        </section>
+
+        <section>
+          <p>Babel/SWC let's us do:</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+			export interface Props {
+				name: string;
+			}
+
+			export default function Component(props: Props) {
+				return <div>Hello World</div>;
+			}
+			</code></pre>
+        </section>
+
+        <section>
+          <p>Yarn and NPM gave us:</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+import React from 'react';
+import classnames from 'classnames';
+			</code></pre>
+        </section>
+
+        <section>
+          <p>Webpack, ESBuild, Rollup let’s us:</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+import Icon from './assets/icon.svg';
+import ImageSrc from './assets/image.jpg';
+import myCss from './styles/my.css';
+			</code></pre>
+        </section>
+
+        <section>Hold on...</section>
+
+        <section>What is CSS doing in our JavaScript?</section>
+
+        <section>Let's take a look at the history of CSS</section>
+
+        <section>
+          <p>Released in <strong>1996</strong></p>
+          <p class="fragment">A way to <strong>style</strong> web pages</p>
+          <p class="fragment"><strong>Markup language</strong></p>
+        </section>
+
+        <section>
+          <p>Simple example</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+div {
+  height: 10px;
+  color: grey;
+}
+			</code></pre>
+        </section>
+
+        <section>
+          <p>In the browser</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+<link rel="styles/css1.css" />
+<link rel="styles/css2.css" />
+			</code></pre>
+        </section>
+
+        <section>
+          <p>Which translates to...</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers="|12">
+/* styles/css1.css */
+.container {
+  height: 10px;
+  background-color: red;
+}
+
+.special.container {
+  width: 50px;
+}
+
+/* styles/css2.css */
+.container { /* conflict!!!! */
+  width: 100px;
+  background-color: blue;
+}
+			</code></pre>
+        </section>
+
+        <section>
+          <p>Rules were messy...</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers="|2|4|3">
+			.my-component {
+				height: 10px; /* from .container in styles/css1.css */
+				width: 50px; /* from .special.container in styles/css1.css */
+				background-color: blue; /* from .container in styles/css2.css */
+			}
+			</code></pre>
+        </section>
+
+        <section>
+          <p>BEM</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+			.main-container__section--success {
+				background-color: green;
+			}
+			</code></pre>
+        </section>
+
+        <section>
+          <p>It was just a naming convention...</p>
+          <p class="fragment">Not good enough!</p>
+        </section>
+
+        <section>But developers wanted more...</section>
+
+        <section>
+          <p>🙁</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+var height = 10px; /* ERROR */
+
+div {
+  height: height;
+  color: grey;
+}
+			</code></pre>
+        </section>
+
+        <section>So we made more tools...</section>
+
+        <section>
+          <p>SASS!</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+$my-color: red;
+
+.container {
+  color: $my-color;
+
+  & .card {
+    width: 50px;
+  }
+}
+			</code></pre>
+        </section>
+
+        <section>
+          <p>LESS!</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+@my-color: red;
+
+.container {
+  color: @my-color;
+
+  .card {
+    width: 50px;
+  }
+}
+			</code></pre>
+        </section>
+
+        <section>
+          <img src="https://imgs.xkcd.com/comics/standards.png" />
+        </section>
+
+        <section>
+          <p>Official CSS3 specification</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+:root {
+  --my-color: red;
+}
+
+.container {
+  color: var(--my-color);
+
+  & .card {
+    width: 50px;
+  }
+}
+			</code></pre>
+        </section>
+
+        <section>¯\_(ツ)_/¯</section>
+
+        <section>Back to CSS...</section>
+
+        <section>
+          <p>Optimization?</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+<script src="/components/script1.js"></script>
+<link src="/components/style1.css" />
+<link src="/components/style2.css" /> /* not needed! waste of resources!! */
+			</code></pre>
+        </section>
+
+        <section>Bundlers came to the rescue!</section>
+
+        <section>
+          <p>😀</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+// components/script1.js
+import './components/styles1.css';
+			</code></pre>
+        </section>
+
+        <section>But we still had a problem...</section>
+
+        <section>
+          <p>🙁</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+			.main-container__section--success { /* ewww */
+				background-color: green;
+			}
+			</code></pre>
+        </section>
+
+        <section>CSS Modules!</section>
+
+        <section>
+          <p>From this...</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+/* styles1.css */
+.section {
+  background-color: green;
+}
+
+/* styles2.css */
+.section {
+  background-color: blue;
+}
+			</code></pre>
+        </section>
+
+        <section>
+          <p>We get this!</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+			.a72d6005 {
+				background-color: green;
+			}
+
+			  /* yay, no conflicts! */
+			.ec5a88f0 {
+				background-color: blue;
+			}
+			</code></pre>
+        </section>
+
+        <section>What if we took away the CSS files?</section>
+
+        <section>
+          <p>Styled components were born!</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+const Button = styled.a`
+  display: inline-block;
+  border-radius: 3px;
+  padding: 0.5rem 0;
+  margin: 0.5rem 1rem;
+  width: 11rem;
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+`
+			</code></pre>
+        </section>
+
+        <section>Can we take this further?</section>
+
+        <section>Why not just take away the CSS?</section>
+
+        <section>
+          <p>Tailwind!</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+const Button = () => (
+  <button className="p-4 mb-2 text-lg">
+    Click me
+  </button>
+);
+			</code></pre>
+        </section>
+
+        <section>All of this was possible thanks to bundlers</section>
+
+        <section>
+          <p>ECMAScript + CSS Modules + CSS3</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+import React from 'react';
+import styles from './index.css';
+
+export default () => <div className={styles.container}>Hello World</div>;
+			</code></pre>
+        </section>
+
+        <section>
+          <p>TypeScript + BEM + SASS</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+// no need to import React
+import './index.scss';
+const Component: React.FC<{}> = () => <div className="container--standard">Hello World</div>;
+
+export default Component;
+			</code></pre>
+        </section>
+
+        <section>
+          <p>ECMAScript + Styled components</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+			import styled from 'styled-components';
+			const Div = styled.div`
+			  /* my styles */
+			`; // no CSS imports, magic!
+
+			export default () => <Div>Hello World</Div>;
+			</code></pre>
+        </section>
+
+        <section>
+          <p>What else can we do?</p>
+          <p class="fragment">What if we get rid of JavaScript?</p>
+        </section>
+
+        <section>
+          <p>CoffeeScript</p>
+          <pre
+            data-id="code-animation"
+          ><code class="hljs" data-trim data-line-numbers>
+{div} = React.DOM
+
+# who needs parentheses anyway
+export default div
+  className: 'p-4 inline bg-red'
+  Hello World
+			</code></pre>
+        </section>
+
+        <section>Bundlers give us superpowers</section>
+
+        <section>We can customise the language</section>
+
+        <section>
+          <ul>
+            <li>Browser compatibility</li>
+            <li class="fragment">Minification</li>
+            <li class="fragment">Code isolation</li>
+            <li class="fragment">Lazy loading and tree-shaking</li>
+            <li class="fragment">Cache busting</li>
+          </ul>
+        </section>
+
+        <section>Inspired?</section>
+
+        <section>Discussion time</section>
+      </div>
+    </div>
+
+    <script src="dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script>
+      // More info about initialization & config:
+      // - https://revealjs.com/initialization/
+      // - https://revealjs.com/config/
+      Reveal.initialize({
+        hash: true,
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+      });
+    </script>
+  </body>
 </html>
